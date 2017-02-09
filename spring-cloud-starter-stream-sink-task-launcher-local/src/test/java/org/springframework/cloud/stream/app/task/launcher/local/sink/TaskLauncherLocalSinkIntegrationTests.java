@@ -43,7 +43,7 @@ import static org.junit.Assert.assertEquals;
  * @author Thomas Risberg
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = TaskLauncherLocalSinkIntegrationTests.TaskLauncherSinkApplication.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @DirtiesContext
 public class TaskLauncherLocalSinkIntegrationTests {
 
