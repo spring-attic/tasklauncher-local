@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.deployer.spi.task.LaunchState;
-import org.springframework.cloud.stream.annotation.Bindings;
 import org.springframework.cloud.stream.app.task.launcher.local.sink.configuration.TaskSinkConfiguration;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.cloud.task.launcher.TaskLaunchRequest;
@@ -36,16 +34,16 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.messaging.MessageHandlingException;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * @author Glenn Renfro
+ * @author Thomas Risberg
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = TaskLauncherLocalSinkIntegrationTests.TaskLauncherSinkApplication.class)
-@WebIntegrationTest({"server.port:0"})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = TaskLauncherLocalSinkIntegrationTests.TaskLauncherSinkApplication.class)
 @DirtiesContext
 public class TaskLauncherLocalSinkIntegrationTests {
 
@@ -54,13 +52,12 @@ public class TaskLauncherLocalSinkIntegrationTests {
 
 
 	@Autowired
-	@Bindings(TaskLauncherLocalSinkConfiguration.class)
 	private Sink sink;
 
 
 	@Test(expected = MessageHandlingException.class)
 	public void sendBadRequest() throws IOException {
-		TaskLaunchRequest request = new TaskLaunchRequest("maven://foo", null, null, null);
+		TaskLaunchRequest request = new TaskLaunchRequest("maven://foo", null, null, null, "test");
 		sink.input().send(new GenericMessage<>(request));
 	}
 
@@ -68,9 +65,9 @@ public class TaskLauncherLocalSinkIntegrationTests {
 	@Ignore
 	public void sendRequest() throws IOException {
 		TaskSinkConfiguration.TestTaskLauncher testTaskLauncher =
-				(TaskSinkConfiguration.TestTaskLauncher) applicationContext.getBean(TaskSinkConfiguration.TestTaskLauncher.class);
+				applicationContext.getBean(TaskSinkConfiguration.TestTaskLauncher.class);
 
-		TaskLaunchRequest request = new TaskLaunchRequest("maven://org.springframework.cloud.task.app:timestamp-task:jar:1.0.0.BUILD-SNAPSHOT", null, null, null);
+		TaskLaunchRequest request = new TaskLaunchRequest("maven://org.springframework.cloud.task.app:timestamp-task:jar:1.0.0.BUILD-SNAPSHOT", null, null, null, "test");
 		sink.input().send(new GenericMessage<>(request));
 		assertEquals(LaunchState.complete, testTaskLauncher.status("TESTSTATUS").getState());
 	}
