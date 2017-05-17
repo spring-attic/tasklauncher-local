@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,17 @@
 package org.springframework.cloud.stream.app.task.launcher.local.sink.configuration;
 
 import org.springframework.cloud.deployer.spi.core.AppDeploymentRequest;
+import org.springframework.cloud.deployer.spi.core.RuntimeEnvironmentInfo;
 import org.springframework.cloud.deployer.spi.task.LaunchState;
 import org.springframework.cloud.deployer.spi.task.TaskLauncher;
 import org.springframework.cloud.deployer.spi.task.TaskStatus;
+import org.springframework.cloud.deployer.spi.util.RuntimeVersionUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Glenn Renfro
+ * @author Ilayaperumal Gopinathan
  */
 @Configuration
 public class TaskSinkConfiguration {
@@ -66,6 +69,17 @@ public class TaskSinkConfiguration {
 		@Override
 		public void destroy(String s) {
 
+		}
+
+		@Override
+		public RuntimeEnvironmentInfo environmentInfo() {
+			return (new RuntimeEnvironmentInfo.Builder())
+					.spiClass(TaskLauncher.class)
+					.implementationName(this.getClass().getSimpleName())
+					.implementationVersion(RuntimeVersionUtils.getVersion(this.getClass())).platformType("Local")
+					.platformApiVersion(System.getProperty("os.name") + " " + System.getProperty("os.version"))
+					.platformClientVersion(System.getProperty("os.version"))
+					.platformHostVersion(System.getProperty("os.version")).build();
 		}
 	}
 
