@@ -8,13 +8,15 @@ Any message that does not contain a `TaskLaunchRequest` will log an error.
 
 == Input
 
-=== Headers
+=== Headers:
 
-N/A
+* `Content-Type: application/octet-stream`
 
-=== Payload
+=== Payload:
 
-* `org.springframework.cloud.task.launcher.TaskLaunchRequest`
+A  byte array containing the `TaskLaunchRequest`
+
+NOTE: The `TaskLaunchRequest` contains the URI of the task jar, the command line arguments, and properties required for the task launch.
 
 == Output
 
