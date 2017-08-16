@@ -30,12 +30,17 @@ properties and arguments to execute the task.
 
 Another example would be to use a processor to translate a message from another source into a `TaskLaunchRequest` that
 would be sent to the tasklauncher sink.
-//end::ref-doc[]
 
 == Build
 
 ```
-$ mvn clean package
+$ ./mvnw clean install -PgenerateApps
+$ cd apps
+
+You can find the corresponding binder based projects here. You can then cd into one one of the folders and
+build it:
+
+$ ./mvnw clean package
 ```
 
 === Examples
@@ -43,3 +48,4 @@ $ mvn clean package
 ```
 java -jar task-launcher-local.jar
 ```
+//end::ref-doc[]
