@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 the original author or authors.
+ * Copyright 2017-2018 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.springframework.cloud.stream.app.task.launcher.local.sink;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,7 +35,7 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
  * @author Glenn Renfro
@@ -62,14 +61,13 @@ public class TaskLauncherLocalSinkIntegrationTests {
 	}
 
 	@Test
-	@Ignore
 	public void sendRequest() throws IOException {
 		TaskSinkConfiguration.TestTaskLauncher testTaskLauncher =
 				applicationContext.getBean(TaskSinkConfiguration.TestTaskLauncher.class);
 
-		TaskLaunchRequest request = new TaskLaunchRequest("maven://org.springframework.cloud.task.app:timestamp-task:jar:1.0.0.BUILD-SNAPSHOT", null, null, null, "test");
+		TaskLaunchRequest request = new TaskLaunchRequest("maven://org.springframework.cloud.task.app:timestamp-task:jar:1.2.0.RELEASE", null, null, null, "test");
 		sink.input().send(new GenericMessage<>(request));
-		assertEquals(LaunchState.complete, testTaskLauncher.status("TESTSTATUS").getState());
+		assertThat(testTaskLauncher.status("TESTSTATUS").getState()).isEqualTo(LaunchState.complete);
 	}
 
 	@SpringBootApplication
